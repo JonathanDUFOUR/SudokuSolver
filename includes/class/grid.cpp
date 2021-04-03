@@ -6,7 +6,7 @@
 /*   By: jodufour <jodufour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/31 19:02:38 by jodufour          #+#    #+#             */
-/*   Updated: 2021/04/03 04:17:09 by jodufour         ###   ########.fr       */
+/*   Updated: 2021/04/03 04:45:01 by jodufour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,18 +52,11 @@ short	grid::getCell(int index)
 void	grid::print(void)
 {
 	int	i;
-	int	j;
 
 	printBorders();
 	i = -1;
-	while (++i < 9)
-	{
-		j = -1;
-		while (++j < 9)
-		{
-			printCellOptions(i, j);
-		}
-	}
+	while (++i < 81)
+		printCellOptions(i);
 }
 
 void	grid::printBorders(void)
@@ -149,17 +142,18 @@ void	grid::printBorders(void)
 	
 }
 
-void	grid::printCellOptions(int i, int j)
+void	grid::printCellOptions(int index)
 {
 	int	option;
 
 	option = -1;
-	if (isOptionFixed((i * 9) + j))
+	if (isOptionFixed(index))
 	{
 		while (++option < 9)
 		{
-			move(((i * 4) + (option / 3) + 1), ((j * 8) + ((option % 3) * 2) + 2));
-			if (isOptionSet(i, j, option))
+			move(	(((index / 9) * 4) + (option / 3) + 1),
+					(((index % 9) * 8) + ((option % 3) * 2) + 2));
+			if (isOptionSet(index, option))
 			{
 				attron(COLOR_PAIR(FIXED_OPTION));
 				printw(std::string(std::to_string(option + 1)).c_str());
@@ -177,8 +171,9 @@ void	grid::printCellOptions(int i, int j)
 	{
 		while (++option < 9)
 		{
-			move(((i * 4) + (option / 3) + 1), ((j * 8) + ((option % 3) * 2) + 2));
-			if (isOptionSet(i, j, option))
+			move(	(((index / 9) * 4) + (option / 3) + 1),
+					(((index % 9) * 8) + ((option % 3) * 2) + 2));
+			if (isOptionSet(index, option))
 			{
 				attron(COLOR_PAIR(MULTIPLE_OPTIONS));
 				printw(std::string(std::to_string(option + 1)).c_str());
@@ -192,11 +187,6 @@ void	grid::printCellOptions(int i, int j)
 			}
 		}
 	}
-}
-
-bool	grid::isOptionSet(int i, int j, int option)
-{
-	return ((cells[i * 9 + j] >> option) & 1);
 }
 
 void	grid::findAvailableOptions(void)
@@ -219,6 +209,11 @@ void	grid::findAvailableOptions(void)
 			}
 		}
 	}
+}
+
+bool	grid::isOptionSet(int index, int option)
+{
+	return ((cells[index] >> option) & 1);
 }
 
 bool	grid::isOptionFixed(int index)
