@@ -6,7 +6,7 @@
 /*   By: jodufour <jodufour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/31 19:02:38 by jodufour          #+#    #+#             */
-/*   Updated: 2021/04/03 04:52:47 by jodufour         ###   ########.fr       */
+/*   Updated: 2021/04/03 17:44:42 by jodufour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,33 +15,51 @@
 #include <string>
 #include "sudoku.hpp"
 
-//	Constructor
+////////////////////////////////  Constructors  ////////////////////////////////
+grid::grid()
+{
+	int	i;
+
+	i = -1;
+	while (++i < 81)
+		unsetCell(i);
+}
+
 grid::grid(char const **values)
 {
 	int	i;
-	int	j;
 
 	i = -1;
-	while (++i < 9)
+	while (++i < 81)
 	{
-		j = -1;
-		while (++j < 9)
-		{
-			if (values[i][j] >= '1' && values[i][j] <= '9')
-				setCell(i * 9 + j, values[i][j] - '0');
-			else
-				cells[i * 9 + j] = 0;
-		}
+		unsetCell(i);
+		if (values[i / 9][i % 9] >='1' && values[i / 9][i % 9] <= '9')
+			addOption(i, (values[i / 9][i % 9] - '0' - 1));
 	}
 }
 
-//	Seter
-void	grid::setCell(int index, int value)
+///////////////////////////////////  Seters  ///////////////////////////////////
+void	grid::setCell(int index, short value)
 {
-	cells[index] = 1 << (value - 1);
+	cells[index] = value;
 }
 
-//	Geter
+void	grid::unsetCell(int index)
+{
+	cells[index] = 0;
+}
+
+void	grid::addOption(int index, int option)
+{
+	cells[index] += 1 << option;
+}
+
+void	grid::removeOption(int index, int option)
+{
+	cells[index] -= (1 << option);
+}
+
+///////////////////////////////////  Geters  ///////////////////////////////////
 short	grid::getCell(int index)
 {
 	return (cells[index]);
@@ -202,9 +220,9 @@ void	grid::findAvailableOptions(void)
 			option = -1;
 			while (++option < 9)
 			{
-				if (isOptionAvailable(option, i))
+				if (isOptionAvailable(i, option))
 				{
-					cells[i] += 1 << option;
+					addOption(i, option);
 				}
 			}
 		}
@@ -226,9 +244,11 @@ void	grid::reduceAvailableOptions(void)
 			{
 				if (isOptionSet(i, option))
 				{
-					if (!isOptionAvailable(option, i))
+					if (!isOptionAvailable(i, option))
 					{
-						cells[i] -= 1 << option;
+						removeOption(i, option);
+						if (isOptionFixed(i))
+							break ;
 					}
 				}
 			}
@@ -254,14 +274,14 @@ bool	grid::isOptionFixed(int index)
 			cells[index] == 1 << 8);
 }
 
-bool	grid::isOptionAvailable(int option, int index)
+bool	grid::isOptionAvailable(int index, int option)
 {
-	return (checkRow(option, index) &&
-			checkCol(option, index) &&
-			checkSquare(option, index));
+	return (checkRow(index, option) &&
+			checkCol(index, option) &&
+			checkSquare(index, option));
 }
 
-bool	grid::checkRow(int option, int index)
+bool	grid::checkRow(int index, int option)
 {
 	int i;
 
@@ -270,13 +290,15 @@ bool	grid::checkRow(int option, int index)
 	while (++i < 9)
 	{
 		if (isOptionFixed(index + i) &&
-			cells[index + i] == 1 << option)
+			isOptionSet(index + i, option))
+		{
 			return (false);
+		}
 	}
 	return (true);
 }
 
-bool	grid::checkCol(int option, int index)
+bool	grid::checkCol(int index, int option)
 {
 	int i;
 
@@ -285,13 +307,15 @@ bool	grid::checkCol(int option, int index)
 	while (++i < 9)
 	{
 		if (isOptionFixed(index + (i * 9)) &&
-			cells[index + (i * 9)] == 1 << option)
+			isOptionSet(index + (i * 9), option))
+		{
 			return (false);
+		}
 	}
 	return (true);
 }
 
-bool	grid::checkSquare(int option, int index)
+bool	grid::checkSquare(int index, int option)
 {
 	int	i;
 
@@ -300,8 +324,10 @@ bool	grid::checkSquare(int option, int index)
 	while (++i < 9)
 	{
 		if (isOptionFixed(index + (9 * (i / 3)) + (i % 3)) &&
-			cells[index + (9 * (i / 3)) + (i % 3)] == 1 << option)
+			isOptionSet(index + (9 * (i / 3)) + (i % 3), option))
+		{
 			return (false);
+		}
 	}
 	return (true);
 }
