@@ -6,7 +6,7 @@
 /*   By: jodufour <jodufour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/31 19:01:42 by jodufour          #+#    #+#             */
-/*   Updated: 2021/04/02 23:47:55 by jodufour         ###   ########.fr       */
+/*   Updated: 2021/04/03 04:05:36 by jodufour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ enum	e_colors
 	STRONG_BORDER = 1,
 	LIGHT_BORDER,
 	EMPTY_SLOT,
-	OPTION_SLOT
+	MULTIPLE_OPTIONS,
+	FIXED_OPTION
 };
 
 void	setup(void);

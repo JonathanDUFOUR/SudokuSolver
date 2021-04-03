@@ -6,7 +6,7 @@
 /*   By: jodufour <jodufour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/31 19:02:38 by jodufour          #+#    #+#             */
-/*   Updated: 2021/04/03 00:09:03 by jodufour         ###   ########.fr       */
+/*   Updated: 2021/04/03 04:17:09 by jodufour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <string>
 #include "sudoku.hpp"
 
+//	Constructor
 grid::grid(char const **values)
 {
 	int	i;
@@ -34,15 +35,19 @@ grid::grid(char const **values)
 	}
 }
 
+//	Seter
 void	grid::setCell(int index, int value)
 {
 	cells[index] = 1 << (value - 1);
 }
 
+//	Geter
 short	grid::getCell(int index)
 {
 	return (cells[index]);
 }
+
+//////////////////////////////////  Methods  //////////////////////////////////
 
 void	grid::print(void)
 {
@@ -146,24 +151,151 @@ void	grid::printBorders(void)
 
 void	grid::printCellOptions(int i, int j)
 {
-	int	poss;
+	int	option;
 
-	poss = -1;
-	while (++poss < 9)
+	option = -1;
+	if (isOptionFixed((i * 9) + j))
 	{
-		move(((i * 4) + (poss / 3) + 1), ((j * 8) + ((poss % 3) * 2) + 2));
-		if (isOptionSet(i, j, poss))
+		while (++option < 9)
 		{
-			printw(std::string(std::to_string(poss + 1)).c_str());
+			move(((i * 4) + (option / 3) + 1), ((j * 8) + ((option % 3) * 2) + 2));
+			if (isOptionSet(i, j, option))
+			{
+				attron(COLOR_PAIR(FIXED_OPTION));
+				printw(std::string(std::to_string(option + 1)).c_str());
+				attroff(COLOR_PAIR(FIXED_OPTION));
+			}
+			else
+			{
+				attron(COLOR_PAIR(EMPTY_SLOT));
+				printw("-");
+				attroff(COLOR_PAIR(EMPTY_SLOT));
+			}
 		}
-		else
+	}
+	else
+	{
+		while (++option < 9)
 		{
-			printw("-");
+			move(((i * 4) + (option / 3) + 1), ((j * 8) + ((option % 3) * 2) + 2));
+			if (isOptionSet(i, j, option))
+			{
+				attron(COLOR_PAIR(MULTIPLE_OPTIONS));
+				printw(std::string(std::to_string(option + 1)).c_str());
+				attroff(COLOR_PAIR(MULTIPLE_OPTIONS));
+			}
+			else
+			{
+				attron(COLOR_PAIR(EMPTY_SLOT));
+				printw("-");
+				attroff(COLOR_PAIR(EMPTY_SLOT));
+			}
 		}
 	}
 }
 
-bool	grid::isOptionSet(int i, int j, int poss)
+bool	grid::isOptionSet(int i, int j, int option)
 {
-	return ((cells[i * 9 + j] >> poss) & 1);
+	return ((cells[i * 9 + j] >> option) & 1);
+}
+
+void	grid::findAvailableOptions(void)
+{
+	int	i;
+	int	option;
+
+	i = -1;
+	while (++i < 81)
+	{
+		if (!isOptionFixed(i))
+		{
+			option = -1;
+			while (++option < 9)
+			{
+				if (isOptionAvailable(option, i))
+				{
+					cells[i] += 1 << option;
+				}
+			}
+		}
+	}
+}
+
+bool	grid::isOptionFixed(int index)
+{
+	return (cells[index] == 1 ||
+			cells[index] == 1 << 1 ||
+			cells[index] == 1 << 2 ||
+			cells[index] == 1 << 3 ||
+			cells[index] == 1 << 4 ||
+			cells[index] == 1 << 5 ||
+			cells[index] == 1 << 6 ||
+			cells[index] == 1 << 7 ||
+			cells[index] == 1 << 8);
+}
+
+bool	grid::isOptionAvailable(int option, int index)
+{
+	return (checkRow(option, index) &&
+			checkCol(option, index) &&
+			checkSquare(option, index));
+}
+
+bool	grid::checkRow(int option, int index)
+{
+	int i;
+
+	index -= (index % 9);
+	i = -1;
+	while (++i < 9)
+	{
+		if (isOptionFixed(index + i) &&
+			cells[index + i] == 1 << option)
+			return (false);
+	}
+	return (true);
+}
+
+bool	grid::checkCol(int option, int index)
+{
+	int i;
+
+	index %= 9;
+	i = -1;
+	while (++i < 9)
+	{
+		if (isOptionFixed(index + (i * 9)) &&
+			cells[index + (i * 9)] == 1 << option)
+			return (false);
+	}
+	return (true);
+}
+
+bool	grid::checkSquare(int option, int index)
+{
+	int	i;
+
+	index = getSquareCorner(index);
+	i = -1;
+	while (++i < 9)
+	{
+		if (isOptionFixed(index + (9 * (i / 3)) + (i % 3)) &&
+			cells[index + (9 * (i / 3)) + (i % 3)] == 1 << option)
+			return (false);
+	}
+	return (true);
+}
+
+int		grid::getSquareCorner(int index)
+{
+	if ((index >= 0 && index <= 8) ||
+		(index >= 27 && index <= 35) ||
+		(index >= 54 && index <= 62))
+		return (index - (index % 3));
+	if ((index >= 9 && index <= 17) ||
+		(index >= 36 && index <= 44) ||
+		(index >= 63 && index <= 71))
+		return (index - (index % 3) - 9);
+	return (index - (index % 3) - 18);
+	
 }
