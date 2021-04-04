@@ -6,7 +6,7 @@
 /*   By: jodufour <jodufour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/31 19:02:38 by jodufour          #+#    #+#             */
-/*   Updated: 2021/04/03 17:44:42 by jodufour         ###   ########.fr       */
+/*   Updated: 2021/04/05 01:50:19 by jodufour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,8 +247,6 @@ void	grid::reduceAvailableOptions(void)
 					if (!isOptionAvailable(i, option))
 					{
 						removeOption(i, option);
-						if (isOptionFixed(i))
-							break ;
 					}
 				}
 			}
@@ -283,14 +281,16 @@ bool	grid::isOptionAvailable(int index, int option)
 
 bool	grid::checkRow(int index, int option)
 {
+	int	idx;
 	int i;
-
-	index -= (index % 9);
+	
 	i = -1;
 	while (++i < 9)
 	{
-		if (isOptionFixed(index + i) &&
-			isOptionSet(index + i, option))
+		idx = index - (index % 9) + i;
+		if (idx != index &&
+			isOptionFixed(idx) &&
+			isOptionSet(idx, option))
 		{
 			return (false);
 		}
@@ -300,14 +300,16 @@ bool	grid::checkRow(int index, int option)
 
 bool	grid::checkCol(int index, int option)
 {
+	int	idx;
 	int i;
 
-	index %= 9;
 	i = -1;
 	while (++i < 9)
 	{
-		if (isOptionFixed(index + (i * 9)) &&
-			isOptionSet(index + (i * 9), option))
+		idx = (index % 9) + (i * 9);
+		if (idx != index &&
+			isOptionFixed(idx) &&
+			isOptionSet(idx, option))
 		{
 			return (false);
 		}
@@ -317,14 +319,18 @@ bool	grid::checkCol(int index, int option)
 
 bool	grid::checkSquare(int index, int option)
 {
+	int	idx;
+	int corner;
 	int	i;
 
-	index = getSquareCorner(index);
+	corner = getSquareCorner(index);
 	i = -1;
 	while (++i < 9)
 	{
-		if (isOptionFixed(index + (9 * (i / 3)) + (i % 3)) &&
-			isOptionSet(index + (9 * (i / 3)) + (i % 3), option))
+		idx = corner + (9 * (i / 3)) + (i % 3);
+		if (idx != index &&
+			isOptionFixed(idx) &&
+			isOptionSet(idx, option))
 		{
 			return (false);
 		}
