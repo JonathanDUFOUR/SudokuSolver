@@ -6,7 +6,7 @@
 /*   By: jodufour <jodufour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/31 19:02:38 by jodufour          #+#    #+#             */
-/*   Updated: 2021/04/05 03:09:26 by jodufour         ###   ########.fr       */
+/*   Updated: 2021/04/05 16:24:54 by jodufour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,6 +218,7 @@ int		grid::findAvailableOptions(void)
 	{
 		if (!isOptionFixed(i))
 		{
+			unsetCell(i);
 			impossible = true;
 			option = -1;
 			while (++option < 9)
@@ -283,30 +284,18 @@ int		grid::backtrack(int index)
 		option = -1;
 		while (++option < 9)
 		{
-			if (isOptionSet(index, option))
+			if (isOptionSet(index, option) && isOptionAvailable(index, option))
 			{
 				unsetCell(index);
 				addOption(index, option);
-				ret = reduceAvailableOptions();
-				print();
-				pause();
+				ret = backtrack(index + 1);
 				if (ret == IMPOSSIBLE)
 				{
 					cells[index] = cellCpy;
-					findAvailableOptions();
 				}
 				else
 				{
-					ret = backtrack(index + 1);
-					if (ret == IMPOSSIBLE)
-					{
-						cells[index] = cellCpy;
-						findAvailableOptions();
-					}
-					else
-					{
-						return (SUCCESS);
-					}
+					return (SUCCESS);
 				}
 			}
 		}
