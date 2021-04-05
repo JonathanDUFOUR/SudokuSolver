@@ -6,7 +6,7 @@
 /*   By: jodufour <jodufour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 03:26:48 by jodufour          #+#    #+#             */
-/*   Updated: 2021/04/03 15:57:18 by jodufour         ###   ########.fr       */
+/*   Updated: 2021/04/05 01:59:22 by jodufour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ public:
 	void	printCellOptions(int index);
 	void	printBorders(void);
 	void	findAvailableOptions(void);
-	void	reduceAvailableOptions(void);
+	int		reduceAvailableOptions(void);
 	bool	isOptionFixed(int index);
 	bool	isOptionSet(int index, int option);
 	bool	isOptionAvailable(int index, int option);

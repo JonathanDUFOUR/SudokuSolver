@@ -6,7 +6,7 @@
 /*   By: jodufour <jodufour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/31 19:01:09 by jodufour          #+#    #+#             */
-/*   Updated: 2021/04/02 23:36:07 by jodufour         ###   ########.fr       */
+/*   Updated: 2021/04/05 01:58:41 by jodufour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,11 @@ int	main(int ac, char const **av)
 	}
 	setup();
 	ret = checkInput(ac, av);
+	if (ret == SUCCESS)
+		ret = solve(av + 1);
 	if (ret != SUCCESS)
-		return (errMsg(ret));
-	ret = solve(av + 1);
-	if (ret != SUCCESS)
-		return (errMsg(ret));
+		errMsg(ret);
 	pause();
 	endwin();
-	return (SUCCESS);
+	return (ret);
 }

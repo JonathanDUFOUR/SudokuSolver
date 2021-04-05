@@ -6,7 +6,7 @@
 /*   By: jodufour <jodufour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/31 19:01:42 by jodufour          #+#    #+#             */
-/*   Updated: 2021/04/03 04:05:36 by jodufour         ###   ########.fr       */
+/*   Updated: 2021/04/05 01:56:44 by jodufour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,12 @@ enum	e_colors
 	LIGHT_BORDER,
 	EMPTY_SLOT,
 	MULTIPLE_OPTIONS,
-	FIXED_OPTION
+	FIXED_OPTION,
+	ERROR_MESSAGE
 };
 
 void	setup(void);
-int		errMsg(int errCode);
+void	errMsg(int errCode);
 int		checkInput(int ac, char const **av);
 int		strchr(char const c, char const *s);
 int		solve(char const **values);
