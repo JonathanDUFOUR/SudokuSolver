@@ -6,7 +6,7 @@
 /*   By: jodufour <jodufour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 04:15:59 by jodufour          #+#    #+#             */
-/*   Updated: 2021/04/05 02:15:01 by jodufour         ###   ########.fr       */
+/*   Updated: 2021/04/05 02:50:34 by jodufour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ int	solve(char const **values)
 		if (ret != SUCCESS)
 			return (ret);
 	}
-	sudoku.print();
-	return (SUCCESS);
+	ret = sudoku.backtrack(0);
+	if (ret == SUCCESS)
+		sudoku.print();
+	return (ret);
 }
