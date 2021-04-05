@@ -6,7 +6,7 @@
 /*   By: jodufour <jodufour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 04:15:59 by jodufour          #+#    #+#             */
-/*   Updated: 2021/04/05 02:01:33 by jodufour         ###   ########.fr       */
+/*   Updated: 2021/04/05 02:15:01 by jodufour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@ int	solve(char const **values)
 	int		ret;
 	int		i;
 
-	sudoku.findAvailableOptions();
+	ret = sudoku.findAvailableOptions();
+	if (ret != SUCCESS)
+		return (ret);
 	i = -1;
 	while (++i < 10)
 	{
