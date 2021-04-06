@@ -6,7 +6,7 @@
 /*   By: jodufour <jodufour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/31 19:02:38 by jodufour          #+#    #+#             */
-/*   Updated: 2021/04/05 16:24:54 by jodufour         ###   ########.fr       */
+/*   Updated: 2021/04/06 23:07:14 by jodufour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -286,6 +286,8 @@ int		grid::backtrack(int index)
 		{
 			if (isOptionSet(index, option) && isOptionAvailable(index, option))
 			{
+				print();
+				while (getch() != 'n');
 				unsetCell(index);
 				addOption(index, option);
 				ret = backtrack(index + 1);
