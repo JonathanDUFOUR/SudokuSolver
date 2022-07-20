@@ -1,71 +1,87 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: jodufour <jodufour@student.42.fr>          +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2021/03/31 18:49:45 by jodufour          #+#    #+#              #
-#    Updated: 2021/04/02 23:35:28 by jodufour         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
-CC			=	g++ -c -o
-LINKER		=	g++ -o
+######################################
+#              COMMANDS              #
+######################################
+CXX			=	clang++
+LINK		=	clang++
+MKDIR		=	mkdir -p
 RM			=	rm -rf
-MAKEDIR		=	mkdir -p
 
-NAME		=	sudoku
-SRCD		=	srcs/
-OBJD		=	objs/
-INCLUDE		=	includes/
-CLASSD		=	class/
-CLASSD		:=	${addprefix ${INCLUDE}, ${CLASSD}}
+######################################
+#             EXECUTABLE             #
+######################################
+NAME		=	sudoku.out
 
-CLASSES		=	grid.cpp
+#######################################
+#             DIRECTORIES             #
+#######################################
+SRC_DIR		=	srcs/
+OBJ_DIR		=	objs/
+PRV_DIR		=	private/
 
-SRCS		=	\
-				${CLASSES}		\
-				main.cpp		\
-				setup.cpp		\
-				errMsg.cpp		\
-				checkInput.cpp	\
-				strchr.cpp		\
-				solve.cpp		\
-				pause.cpp
+######################################
+#            SOURCE FILES            #
+######################################
+SRC			=	\
+				${addprefix class/,	\
+					Grid.cpp		\
+				}					\
+				checkInput.cpp		\
+				errMsg.cpp			\
+				main.cpp			\
+				pause.cpp			\
+				setup.cpp			\
+				solve.cpp			\
+				strchr.cpp
 
-OBJS		=	${SRCS:.cpp=.o}
-OBJS		:=	${addprefix ${OBJD}, ${OBJS}}
-DEPS		=	${OBJS:.o=.d}
+######################################
+#            OBJECT FILES            #
+######################################
+OBJ			=	${SRC:.cpp=.o}
+OBJ			:=	${addprefix ${OBJ_DIR}, ${OBJ}}
 
-CPPFLAGS	=	-Wall -Wextra -I ${INCLUDE} -MMD
+DEP			=	${OBJ:.o=.d}
+
+#######################################
+#                FLAGS                #
+#######################################
+CXXFLAGS	=	-c
+CXXFLAGS	+=	-Wall -Wextra -Werror
+CXXFLAGS	+=	-Wshadow
+CXXFLAGS	+=	-Weffc++
+# CXXFLAGS	+=	-std=c++98
+CXXFLAGS	+=	-pedantic
+CXXFLAGS	+=	-MMD -MP
+CXXFLAGS	+=	-I${PRV_DIR}
+
 LDFLAGS		=	-lncurses
 
-ifeq (${DEBUG}, TRUE)
-	CPPFLAGS += -g
+ifeq (${DEBUG}, 1)
+	CXXFLAGS	+=	-g
+	CXXFLAGS	+=	-DDEBUG=1
 endif
 
-${NAME}:	${OBJS}
-	${LINKER} $@ ${LDFLAGS} $^
+#######################################
+#                RULES                #
+#######################################
+.PHONY: all clean fclean re fre
 
-all:	${NAME}
+${NAME}: ${OBJ}
+	${LINK} $^ ${LDFLAGS} ${OUTPUT_OPTION}
 
--include ${DEPS}
+all: ${NAME}
 
-${OBJD}%.o:	${SRCD}%.cpp
-	@${MAKEDIR} ${OBJD}
-	${CC} $@ ${CPPFLAGS} $<
+-include ${DEP}
 
-${OBJD}%.o:	${CLASSD}%.cpp
-	@${MAKEDIR} ${OBJD}
-	${CC} $@ ${CPPFLAGS} $<
+${OBJ_DIR}%.o: ${SRC_DIR}%.cpp
+	@${MKDIR} ${@D}
+	${CXX} $< ${CXXFLAGS} ${OUTPUT_OPTION}
 
 clean:
-	${RM} ${OBJD} ${DEPS}
+	${RM} ${OBJ_DIR} ${NAME} vgcore.*
 
 fclean:
-	${RM} ${OBJD} ${DEPS} ${NAME}
+	${RM} ${OBJ_DIR} ${NAME} vgcore.*
 
-re:	fclean all
+re: clean all
 
-.PHONY:	all clean fclean
+fre: fclean all

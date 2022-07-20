@@ -30,7 +30,6 @@ int	main(int ac, char const **av)
 		ret = solve(av + 1);
 	if (ret != SUCCESS)
 		errMsg(ret);
-	pause();
 	endwin();
 	return (ret);
 }

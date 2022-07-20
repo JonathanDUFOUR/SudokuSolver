@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   grid.hpp                                           :+:      :+:    :+:   */
+/*   Grid.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jodufour <jodufour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,13 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-class grid
+class Grid
 {
 private:
 	short	cells[81];
 public:
-			grid();
-			grid(char const **values);
+			Grid();
+			Grid(char const **values);
 
 	void	setCell(int index, short value);
 	void	unsetCell(int index);

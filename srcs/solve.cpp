@@ -14,7 +14,7 @@
 
 int	solve(char const **values)
 {
-	grid	sudoku(values);
+	Grid	sudoku(values);
 	int		ret;
 	int		i;
 

@@ -13,7 +13,7 @@
 #pragma once
 
 # include <iostream>
-# include "class/grid.hpp"
+# include "class/Grid.hpp"
 
 # define ALLOWED_CHARS ".123456789"
 

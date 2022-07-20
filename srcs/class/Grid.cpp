@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   grid.cpp                                           :+:      :+:    :+:   */
+/*   Grid.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jodufour <jodufour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -15,8 +15,11 @@
 #include <string>
 #include "sudoku.hpp"
 
-////////////////////////////////  Constructors  ////////////////////////////////
-grid::grid()
+// ************************************************************************** //
+//                                Constructors                                //
+// ************************************************************************** //
+
+Grid::Grid(void)
 {
 	int	i;
 
@@ -25,7 +28,7 @@ grid::grid()
 		unsetCell(i);
 }
 
-grid::grid(char const **values)
+Grid::Grid(char const **values)
 {
 	int	i;
 
@@ -38,36 +41,40 @@ grid::grid(char const **values)
 	}
 }
 
-///////////////////////////////////  Seters  ///////////////////////////////////
-void	grid::setCell(int index, short value)
-{
-	cells[index] = value;
-}
+// ************************************************************************* //
+//                                 Accessors                                 //
+// ************************************************************************* //
 
-void	grid::unsetCell(int index)
-{
-	cells[index] = 0;
-}
-
-void	grid::addOption(int index, int option)
-{
-	cells[index] += 1 << option;
-}
-
-void	grid::removeOption(int index, int option)
-{
-	cells[index] -= (1 << option);
-}
-
-///////////////////////////////////  Geters  ///////////////////////////////////
-short	grid::getCell(int index)
+short	Grid::getCell(int index)
 {
 	return (cells[index]);
 }
 
-//////////////////////////////////  Methods  //////////////////////////////////
+void	Grid::setCell(int index, short value)
+{
+	cells[index] = value;
+}
 
-void	grid::print(void)
+void	Grid::unsetCell(int index)
+{
+	cells[index] = 0;
+}
+
+void	Grid::addOption(int index, int option)
+{
+	cells[index] += 1 << option;
+}
+
+void	Grid::removeOption(int index, int option)
+{
+	cells[index] -= (1 << option);
+}
+
+// ************************************************************************* //
+//                          Public Member Functions                          //
+// ************************************************************************* //
+
+void	Grid::print(void)
 {
 	int	i;
 
@@ -75,9 +82,10 @@ void	grid::print(void)
 	i = -1;
 	while (++i < 81)
 		printCellOptions(i);
+	pause();
 }
 
-void	grid::printBorders(void)
+void	Grid::printBorders(void)
 {
 	int	i;
 
@@ -160,7 +168,7 @@ void	grid::printBorders(void)
 	
 }
 
-void	grid::printCellOptions(int index)
+void	Grid::printCellOptions(int index)
 {
 	int	option;
 
@@ -207,7 +215,7 @@ void	grid::printCellOptions(int index)
 	}
 }
 
-int		grid::findAvailableOptions(void)
+int		Grid::findAvailableOptions(void)
 {
 	int		i;
 	int		option;
@@ -236,7 +244,7 @@ int		grid::findAvailableOptions(void)
 	return (SUCCESS);
 }
 
-int		grid::reduceAvailableOptions(void)
+int		Grid::reduceAvailableOptions(void)
 {
 	int	option;
 	int	set;
@@ -270,12 +278,13 @@ int		grid::reduceAvailableOptions(void)
 	return (SUCCESS);
 }
 
-int		grid::backtrack(int index)
+int		Grid::backtrack(int index)
 {
 	short	cellCpy;
 	int		option;
 	int		ret;
 
+	this->print();
 	while (isOptionFixed(index) && index < 81)
 		++index;
 	if (index < 81)
@@ -304,14 +313,14 @@ int		grid::backtrack(int index)
 	return (SUCCESS);
 }
 
-bool	grid::isOptionSet(int index, int option)
+bool	Grid::isOptionSet(int index, int option)
 {
 	return ((cells[index] >> option) & 1);
 }
 
-bool	grid::isOptionFixed(int index)
+bool	Grid::isOptionFixed(int index)
 {
-	return (cells[index] == 1 ||
+	return (cells[index] == 1 << 0 ||
 			cells[index] == 1 << 1 ||
 			cells[index] == 1 << 2 ||
 			cells[index] == 1 << 3 ||
@@ -322,14 +331,14 @@ bool	grid::isOptionFixed(int index)
 			cells[index] == 1 << 8);
 }
 
-bool	grid::isOptionAvailable(int index, int option)
+bool	Grid::isOptionAvailable(int index, int option)
 {
 	return (checkRow(index, option) &&
 			checkCol(index, option) &&
 			checkSquare(index, option));
 }
 
-bool	grid::checkRow(int index, int option)
+bool	Grid::checkRow(int index, int option)
 {
 	int	idx;
 	int i;
@@ -348,7 +357,7 @@ bool	grid::checkRow(int index, int option)
 	return (true);
 }
 
-bool	grid::checkCol(int index, int option)
+bool	Grid::checkCol(int index, int option)
 {
 	int	idx;
 	int i;
@@ -367,7 +376,7 @@ bool	grid::checkCol(int index, int option)
 	return (true);
 }
 
-bool	grid::checkSquare(int index, int option)
+bool	Grid::checkSquare(int index, int option)
 {
 	int	idx;
 	int corner;
@@ -388,7 +397,7 @@ bool	grid::checkSquare(int index, int option)
 	return (true);
 }
 
-int		grid::getSquareCorner(int index)
+int		Grid::getSquareCorner(int index)
 {
 	if ((index >= 0 && index <= 8) ||
 		(index >= 27 && index <= 35) ||
